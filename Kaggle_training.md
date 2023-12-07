@@ -19,7 +19,7 @@ Install Kaggle Package
 ```bash
 pip install kaggle
 ```
-Go to [Kaggle](https://www.kaggle.com/) and register a account. Then, get authentication by
+Go to [Kaggle](https://www.kaggle.com/) and register a account. **Make sure to verify your phone number** (otherwise, you may not be able to use GPU offered by Kaggle).  Then, get authentication by
 1. Go to the 'Account' tab of your user profile and select 'Create New Token'. This will trigger the download of kaggle.json, a file containing your API credentials.
 2. Put the `kaggle.json` file under `~/.kaggle/` for Linux, OSX, and other UNIX-based operating systems, or `C:\Users\<Windows-username>\.kaggle\` for Windows system. If the token is not there, an error will be raised. Hence, once you’ve downloaded the token, you should move it from your Downloads folder to this folder.
 
@@ -64,4 +64,4 @@ kaggle kernels push -p .
 
 You can then view the execution using the link in the terminal output.
 
-**Tips for more efficient workflow:** You may want to execute the notebook in Kaggle interactively instead of submiting the whole job for each time. In this way, you don't need to start a new kernel for each run, and thereby don't need to re-install the packages. To do this, find your notebook in Kaggle and click the `Edit` button. Note that you should select the necessary dataset manually now (i.e. the main-code dataset uploaded by yourself, and the finetuning-dataset. You can type MDS5210 to search for the finetuning-dataset.) Then, you only need to run step 2 to upload your main code, use `main.ipynb` to copy the code into working directory, and execute your latest code.
+**Tips for more efficient workflow:** You may want to execute the notebook in Kaggle interactively instead of submiting the whole job for each time. In this way, you don't need to start a new kernel for each run, and thereby don't need to re-install the packages. To do this, find your notebook in Kaggle and click the `Edit` button. Note that you should select the necessary dataset manually now (i.e. the main-code dataset uploaded by yourself, and the finetuning-dataset. You can type MDS5210 to search for the finetuning-dataset.) Then, you only need to run step 1 & 2 to upload your main code, use `main.ipynb` to copy the code into working directory, and execute your latest code.

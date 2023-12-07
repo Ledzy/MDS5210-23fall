@@ -1,6 +1,7 @@
 from torch.utils.data import Dataset, IterableDataset
 from datasets import load_dataset, Features
 from transformers import GPT2Tokenizer, GPT2TokenizerFast
+import numpy as np
 import datasets
 import torch
 from tqdm import tqdm
@@ -75,7 +76,7 @@ class RLHFDataset(Dataset):
         if os.path.exists(cache_dir):
             dataset = datasets.load_from_disk(cache_dir)
         else:
-            dataset = load_dataset("Anthropic/hh-rlhf", split=split)
+            dataset = load_dataset("Anthropic/hh-rlhf", split=split, data_dir="helpful-base")
             dataset.save_to_disk(cache_dir)
         self.pairs = []
         self.masks = []
@@ -85,13 +86,14 @@ class RLHFDataset(Dataset):
             tokenizer.pad_token = tokenizer.eos_token
         elif tokenizer_name == "huggingface/gpt2fast":
             tokenizer = GPT2TokenizerFast.from_pretrained('gpt2')
+            tokenizer.pad_token = tokenizer.eos_token
         elif tokenizer_name == "tiktoken/gpt2":
             tokenizer = TiktokenTokenizer('gpt2')
 
         torch.manual_seed(123) # ensure consistent dataset split
         num_data = len(dataset) // 2
-        mask = ~torch.isin(torch.randperm(num_data), torch.arange(len(dataset)))
-        sub_dset = dataset[mask]
+        selected_idx_list = np.random.choice(len(dataset), num_data, replace=False)
+        sub_dset = dataset[selected_idx_list]
 
         print(f"Loading RLHF Dataset...")
         for i in tqdm(range(num_data)):
@@ -103,6 +105,7 @@ class RLHFDataset(Dataset):
                                  padding="max_length",
                                  truncation=True,
                                  return_tensors="pt")
+                
                 indices.append(out["input_ids"])
                 masks.append(out["attention_mask"])
             self.pairs.append(torch.stack(indices, dim=0))
@@ -139,7 +142,7 @@ class SFTDataset(Dataset):
                 dataset_chosen = json.load(fp)
         else:
             save = True
-            dataset = load_dataset("Anthropic/hh-rlhf", split=split)
+            dataset = load_dataset("Anthropic/hh-rlhf", split=split, data_dir="helpful-base")
 
             # split half for SFT
             torch.manual_seed(123) # for consistent dataset split
