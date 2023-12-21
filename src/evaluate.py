@@ -81,6 +81,3 @@ class ChatGPTEvaluator:
             for judge in tqdm(executor.map(self._get_rating, questions, answers)):
                 judges.append(judge)
         return judges
-    
-if __name__ == '__main__':
-    main()
